@@ -33,10 +33,20 @@ let decoderPartNumber : Decoder<PartNumber> =
         | Ok partNumber -> Decode.succeed partNumber
         | Error validationMessage -> Decode.fail validationMessage
     )
+    
+let decoderBin : Decoder<Bin> =
+    Decode.object (fun get ->
+        {
+            Bin.Identifier = get.Required.Field "identifier" decoderBinIdentifier
+            Content = get.Optional.Field "content" decoderPartNumber
+        }
+    )
 
 /// JSON serialization of a stock product.
-let encoderProduct : Encoder<Product> = fun product ->
-    failwith "Exercise 0: choose your own serialized representation of a Product and implement it here."
+let encoderProduct : Encoder<Product> = fun (Product(PartNumber(pn))) ->
+    Encode.object [
+        "partNumber", Encode.string pn
+    ]
 
 /// JSON serialization of a complete products overview.
 let encoderProductsOverview : Encoder<ProductsOverview> = fun productsOverview ->

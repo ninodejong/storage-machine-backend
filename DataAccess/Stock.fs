@@ -17,5 +17,11 @@ let stockPersistence = { new IStockDataAccess with
             }
         )
         |> Set.toList
-
+        
+        
+    member this.StoreBin bin =
+        match SimulatedDatabase.storeBin (bin) with
+        | Ok(bin) -> Ok(bin)
+        | Error _ -> Error "Failed to store bin"
+        
 }
